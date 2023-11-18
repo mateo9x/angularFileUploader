@@ -1,0 +1,23 @@
+<div class="container">
+  <div class="attachment-upload-container">
+    <input type="file" id="file-input" name="file-input" (change)="addAttachment($event)"/>
+    <label class="file-input-label" for="file-input">Dodaj plik</label>
+  </div>
+  <div class="attachments-container">
+    <ng-container *ngIf="attachments.length> 0">
+      <div class="attachment-container" *ngFor="let attachment of attachments">
+        {{attachment.file.name}}
+        <div class="icons-container">
+          <i class="upload" (click)="uploadAttachment(attachment.id)" *ngIf="attachment.status === 'ADDED'"></i>
+          <i class="upload-spinner"
+             *ngIf="attachment.status === 'UPLOADING'"></i>
+          <i class="upload-success"
+             *ngIf="attachment.status === 'UPLOAD_SUCCESS'"></i>
+          <i class="upload-error" (click)="uploadAttachment(attachment.id)"
+             *ngIf="attachment.status === 'UPLOAD_ERROR'"></i>
+          <i class="trash" (click)="deleteAttachment(attachment.id)"></i>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
