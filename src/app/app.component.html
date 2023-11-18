@@ -1,0 +1,9 @@
+<form [formGroup]="form">
+  <div style="display:flex;width:300px;align-items:center;justify-content: center; margin: auto">
+    <angular-file-uploader formControlName="attachments" (onFileAdd)="onFileAdd($event)" (onFileUpload)="onFileUpload($event)" (onFileDelete)="onFileDelete($event)"></angular-file-uploader>
+  </div>
+</form>
+
+<div class="button-container">
+  <button (click)="save()">Zapisz</button>
+</div>
