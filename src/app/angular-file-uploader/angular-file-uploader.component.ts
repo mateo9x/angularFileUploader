@@ -1,4 +1,4 @@
-import {Component, EventEmitter, forwardRef, Output} from '@angular/core';
+import {Component, EventEmitter, forwardRef, Input, Output} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {Attachment, AttachmentStatus} from './model/attachment.model';
 
@@ -21,20 +21,24 @@ export class AngularFileUploaderComponent implements ControlValueAccessor {
     status: AttachmentStatus.ADDED
   },
     {
-      id: '1',
-      file: new File([], 'test.png'),
+      id: '2',
+      file: new File([], 'test.ads'),
       status: AttachmentStatus.UPLOADING
     },
     {
-      id: '1',
-      file: new File([], 'test.png'),
+      id: '3',
+      file: new File([], 'test.xd'),
       status: AttachmentStatus.UPLOAD_ERROR
     },
     {
-      id: '1',
-      file: new File([], 'test.png'),
+      id: '4',
+      file: new File([], 'test.www'),
       status: AttachmentStatus.UPLOAD_SUCCESS
     }];
+  @Input()
+  acceptTypes = '*';
+  @Input()
+  maxFileSize = 5000 * 1024;
   @Output()
   onFileAdd: EventEmitter<Attachment> = new EventEmitter<Attachment>();
   @Output()
@@ -65,12 +69,15 @@ export class AngularFileUploaderComponent implements ControlValueAccessor {
   }
 
   addAttachment(fileEvent: any) {
-    const file = fileEvent.target.files[0] as File;
-    const id = crypto.randomUUID();
-    const newAttachment = new Attachment(id, file, AttachmentStatus.ADDED);
-    this.attachments.push(newAttachment);
-    this.onChange(this.attachments);
-    this.onFileAdd.emit(newAttachment);
+    const files = fileEvent.target.files as File[];
+    this.validateAddedFiles(files);
+    files.forEach((file) => {
+      const id = crypto.randomUUID();
+      const newAttachment = new Attachment(id, file, AttachmentStatus.ADDED);
+      this.attachments.push(newAttachment);
+      this.onChange(this.attachments);
+      this.onFileAdd.emit(newAttachment);
+    });
   }
 
   uploadAttachment(attachmentId: string) {
@@ -87,6 +94,13 @@ export class AngularFileUploaderComponent implements ControlValueAccessor {
     this.attachments = this.attachments.filter((attachment) => attachment !== attachmentToDelete);
     this.onChange(this.attachments);
     this.onFileDelete.emit(attachmentToDelete);
+  }
+
+  private validateAddedFiles(files: File[]) {
+    const filesWithSizeExceeded = files.filter((file) => file.size > this.maxFileSize);
+    if (filesWithSizeExceeded.length > 0) {
+      throw new Error('File size exceeded');
+    }
   }
 
 }
