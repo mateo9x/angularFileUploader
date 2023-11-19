@@ -1,6 +1,6 @@
 <div class="container">
-  <div class="attachment-upload-container">
-    <input type="file" id="file-input" name="file-input" (change)="addAttachment($event)"/>
+  <div class="attachment-upload-container" (drop)="addAttachment($event)" [draggable]="true">
+    <input type="file" id="file-input" name="file-input" [accept]="acceptTypes" (change)="addAttachment($event)"/>
     <label class="file-input-label" for="file-input">Dodaj plik</label>
   </div>
   <div class="attachments-container">
@@ -15,7 +15,7 @@
              *ngIf="attachment.status === 'UPLOAD_SUCCESS'"></i>
           <i class="upload-error" (click)="uploadAttachment(attachment.id)"
              *ngIf="attachment.status === 'UPLOAD_ERROR'"></i>
-          <i class="trash" (click)="deleteAttachment(attachment.id)"></i>
+          <i class="trash" (click)="deleteAttachment(attachment.id)" *ngIf="attachment.status !== 'UPLOADING'"></i>
         </div>
       </div>
     </ng-container>
